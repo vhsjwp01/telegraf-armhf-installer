@@ -173,7 +173,7 @@ if [ ${exit_code} -eq ${SUCCESS} ]; then
 
     case ${systemctl_or_init} in
 
-        systemctl)
+        */systemctl)
             service_activation_folder="/etc/systemd/system"
             service_file=$(find "${service_scripts_folder}" -maxdepth 1 -type f -iname "telegraf.service")
             service_file_basename=$(basename "${service_file}")

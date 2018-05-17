@@ -19,7 +19,7 @@ TELEGRAF_IGNORE_REGEX="~rc"
 # WHY:  They will come into play later on in this script
 #
 if [ ${exit_code} -eq ${SUCCESS} ]; then
-    echo -ne "Looking for needed commands ... "
+    echo -ne "Looking for needed commands: "
     needed_commands="awk chown chmod cpio curl dirname egrep elinks find head id sort tar zcat"
 
     for needed_command in ${needed_commands} ; do
@@ -27,7 +27,7 @@ if [ ${exit_code} -eq ${SUCCESS} ]; then
         command_found=$(unalias "${needed_command}" > /dev/null 2>&1 ; which "${needed_command}" 2> /dev/null)
     
         if [ "${command_found}" = "" ]; then
-            echo "ERROR"
+            echo "... ERROR"
             err_msg="The command \"${needed_command}\" is required and could not be located"
             exit_code=${ERROR}
             break
@@ -36,7 +36,7 @@ if [ ${exit_code} -eq ${SUCCESS} ]; then
     done
 
     if [ ${exit_code} -eq ${SUCCESS} ]; then
-        echo "SUCCESS"
+        echo "... SUCCESS"
     fi
 
 fi

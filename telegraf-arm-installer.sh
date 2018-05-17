@@ -15,12 +15,37 @@ TELEGRAF_DL_URL="https://portal.influxdata.com/downloads#telegraf"
 TELEGRAF_REGEX="wget.*telegraf.*armhf.*\.tar\.gz"
 TELEGRAF_IGNORE_REGEX="~rc"
 
+# A string used for delimiting stdout
+LINE="........................................................................"
+
+# WHAT: A function to pretty print output
+# WHY:  Readability
+#
+f__print_line() {
+    let f__return_code=${SUCCESS}
+    string_to_print="${1}"
+
+    let string_length=$(echo -ne "${string_to_print}" | wc -c | awk '{print $1}')
+    let filler_length=$(echo -ne "${LINE}" | wc -c | awk '{print $1}')
+    let filler_delta=$(echo "${filler_length}-${string_length}-2" | bc)
+    let is_positive_delta=$(echo "${filler_delta}>0" | bc)
+
+    if [ ${is_positive_delta} -gt 0 ]; then
+        filler_line=$(echo "${LINE}" | cut -c 1-${filler_delta})
+    else
+        filler_line="..."
+    fi
+
+    echo -ne "${string_to_print} ${filler_line} "
+    return ${f__return_code}
+}
+
 # WHAT: Make sure needed commands are present
 # WHY:  They will come into play later on in this script
 #
 if [ ${exit_code} -eq ${SUCCESS} ]; then
     echo -ne "Looking for needed commands: "
-    needed_commands="awk chown chmod cpio curl dirname egrep elinks find head id sort tar zcat"
+    needed_commands="awk bc chown chmod cpio curl cut dirname egrep elinks find head id sort tar wc zcat"
 
     for needed_command in ${needed_commands} ; do
         echo -ne "${needed_command} "
@@ -45,7 +70,7 @@ fi
 # WHY:  Privileges are required to install from binary source
 #
 if [ ${exit_code} -eq ${SUCCESS} ]; then
-    echo -ne "Checking invoking uid ... "
+    f__print_line "Checking invoking uid"
 
     if [ $(id -u) -ne 0 ]; then
         echo "ERROR"
@@ -63,7 +88,7 @@ fi
 # WHY:  If successful, we will be unpacking and then installing the software
 #
 if [ ${exit_code} -eq ${SUCCESS} ]; then
-    echo -ne "Querying ${TELEGRAF_DL_URL} for download command ... "
+    f__print_line "Querying ${TELEGRAF_DL_URL} for download command"
     fetch_command=$(curl ${TELEGRAF_DL_URL} -s | elinks -dump | egrep "${TELEGRAF_REGEX}" | egrep -v "${TELEGRAF_IGNORE_REGEX}")
 
     if [ "${fetch_command}" = "" ]; then
@@ -74,7 +99,7 @@ if [ ${exit_code} -eq ${SUCCESS} ]; then
         echo "SUCCESS"
         target_filename=$(echo "${fetch_command}" | awk -F'/' '{print $NF}')
 
-        echo -ne "Fetching telegraf ... "
+        f__print_line "Fetching telegraf"
         eval "${fetch_command}" > /dev/null 2>&1
         exit_code=${?}
 
@@ -101,7 +126,7 @@ fi
 # WHY:  Historically, permissions have been chaotic at times
 #
 if [ ${exit_code} -eq ${SUCCESS} ]; then
-    echo -ne "Unpacking telegraf archive ... "
+    f__print_line "Unpacking telegraf archive"
     target_folder_name=$(zcat "${target_filename}" | tar xvf - 2>&1 | awk -F'/' '/\.\/telegraf/ {print $2}' | sort -u)
 
     # Make sure the target folder exists
@@ -135,7 +160,7 @@ fi
 # WHY:  They may not be what they need to be following unpacking of the archive
 #
 if [ ${exit_code} -eq ${SUCCESS} ]; then
-    echo -ne "Setting root permissions on unpacked archive ... "
+    f__print_line "Setting root permissions on unpacked archive"
     chown -R root:root "${target_folder_name}" > /dev/null 2>&1 &&
     find "${target_folder_name}" -depth -type f -iname "init.sh" -exec chmod 750 '{}' \; 
     exit_code=${?}
@@ -153,7 +178,7 @@ fi
 # WHY:  Needed for running the daemon
 #
 if [ ${exit_code} -eq ${SUCCESS} ]; then
-    echo -ne "Checking for userid \"telegraf\" ... "
+    f__print_line "Checking for userid \"telegraf\""
     telegraf_user="telegraf"
     id -u ${telegraf_user} 2> /dev/null
     status_code=${?}
@@ -180,7 +205,7 @@ fi
 # WHY:  Needed once the service is active
 #
 if [ ${exit_code} -eq ${SUCCESS} ]; then
-    echo -ne "Asssigning permissions to user telegraf ... "
+    f__print_line "Asssigning permissions to user telegraf"
     chown -R ${telegraf_user}:${telegraf_user} ${target_folder_name}/var/log/telegraf > /dev/null 2>&1
     exit_code=${?}
 
@@ -197,7 +222,7 @@ fi
 # WHY:  Installation prep is complete
 #
 if [ ${exit_code} -eq ${SUCCESS} ]; then
-    echo -ne "Installing telegraf ... "
+    f__print_line "Installing telegraf"
     cd "${target_folder_name}" && find . -depth -print | cpio -pdm / > /dev/null 2>&1
     exit_code=${?}
 
@@ -214,7 +239,7 @@ fi
 # WHY:  So the service can be controlled natively
 #
 if [ ${exit_code} -eq ${SUCCESS} ]; then
-    echo -ne "Installing telegraf service init files ... "
+    f__print_line "Installing telegraf service init files"
     service_scripts_folder="/usr/lib/telegraf/scripts"
     systemctl_or_init=$(which systemctl 2> /dev/null)
 

@@ -45,7 +45,7 @@ fi
 # WHY:  Privileges are required to install from binary source
 #
 if [ ${exit_code} -eq ${SUCCESS} ]; then
-    echo -ne "Looking for needed commands ... "
+    echo -ne "Checking invoking uid ... "
 
     if [ $(id -u) -ne 0 ]; then
         echo "ERROR"

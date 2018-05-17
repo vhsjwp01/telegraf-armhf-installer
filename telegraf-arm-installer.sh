@@ -108,7 +108,7 @@ fi
 # WHY:  They may not be what they need to be following unpacking of the archive
 #
 if [ ${exit_code} -eq ${SUCCESS} ]; then
-    chown -R root:root "${target_folder_name}"
+    chown -R root:root "${target_folder_name}" > /dev/null 2>&1
     exit_code=${?}
 
     if [ ${exit_code} -ne ${SUCCESS} ]; then
@@ -127,7 +127,7 @@ if [ ${exit_code} -eq ${SUCCESS} ]; then
 
     # Create the user if the id command fails
     if [ ${status_code} -ne ${SUCCESS} ]; then
-        useradd -m ${telegraf_user}
+        useradd -m ${telegraf_user} > /dev/null 2>&1
         exit_code=${?}
 
         if [ ${exit_code} -ne ${SUCCESS} ]; then
@@ -142,7 +142,7 @@ fi
 # WHY:  Needed once the service is active
 #
 if [ ${exit_code} -eq ${SUCCESS} ]; then
-    chown -R ${telegraf_user}:${telegraf_user} ${target_folder_name}/var/log/telegraf
+    chown -R ${telegraf_user}:${telegraf_user} ${target_folder_name}/var/log/telegraf > /dev/null 2>&1
     exit_code=${?}
 
     if [ ${exit_code} -ne ${SUCCESS} ]; then

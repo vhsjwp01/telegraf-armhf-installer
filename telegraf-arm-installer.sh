@@ -23,6 +23,7 @@ if [ ${exit_code} -eq ${SUCCESS} ]; then
     needed_commands="awk chown chmod cpio curl dirname egrep elinks find head id sort tar zcat"
 
     for needed_command in ${needed_commands} ; do
+        echo -ne "${needed_command} "
         command_found=$(unalias "${needed_command}" > /dev/null 2>&1 ; which "${needed_command}" 2> /dev/null)
     
         if [ "${command_found}" = "" ]; then

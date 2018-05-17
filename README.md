@@ -3,6 +3,6 @@ A shell script to aid in installing the telegraf binary distribution for ARMhf a
 
 # How to use this script:
 ~~~~
-curl https://github.com/vhsjwp01/telegraf-armhf-installer/telegraf-arm-installer.sh | bash
+curl https://github.com/vhsjwp01/telegraf-armhf-installer/blob/master/telegraf-arm-installer.sh | bash
 ~~~~
 

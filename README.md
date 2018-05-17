@@ -8,9 +8,9 @@ curl -H 'Accept: application/vnd.github.v3.raw' https://api.github.com/repos/vhs
 
 NOTES:
 * On some systems with systemctl, simply creating the symlink is enough to make systemd think the service is enabled.  However, on some systems this is insufficient
-** If systemctl start telegraf~~~~ spits an error, run the following command:
-*** ~~~~ systemctl list-unit-files | egrep telegraf~~~~
-**** if it is reported as 'linked', then run:
-systemctl enable telegraf
-systemctl start telegraf
+* If ``systemctl start telegraf`` spits an error, run the following command:
+** ``systemctl list-unit-files | egrep telegraf``
+*** if it reports 'linked', then run:
+``systemctl enable telegraf``
+``systemctl start telegraf``
 

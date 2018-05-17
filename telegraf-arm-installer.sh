@@ -19,7 +19,7 @@ TELEGRAF_IGNORE_REGEX="~rc"
 # WHY:  They will come into play later on in this script
 #
 if [ ${exit_code} -eq ${SUCCESS} ]; then
-    needed_commands="awk cpio curl egrep elinks find id tar zcat"
+    needed_commands="awk cpio curl dirname egrep elinks find head id sort tar zcat"
 
     for needed_command in ${needed_commands} ; do
         command_found=$(unalias "${needed_command}" > /dev/null 2>&1 ; which "${needed_command}" 2> /dev/null)
@@ -178,8 +178,9 @@ if [ ${exit_code} -eq ${SUCCESS} ]; then
             service_file=$(find "${service_scripts_folder}" -maxdepth 1 -type f -iname "telegraf.service")
             service_file_basename=$(basename "${service_file}")
             service_location_folder=$(find "${service_activation_folder}" -maxdepth 1 -type l -exec dirname '{}' \; | sort -u)
+            service_location_folder=$(find "${service_activation_folder}" -maxdepth 1 -type l -exec ls -l '{}' \; | dirname $(awk '{print $NF}') | egrep "systemd/system" | sort -u | head -1)
             initialize_command="ln -s \"${service_file}\" \"${service_location_folder}/${service_file_basename}\""
-            enable_command="ln -s \"${service_location_folder}/${service_file_basename}\" \"${service_activation_folder}/${service_file_basename}\""
+            enable_command="ln -s \"${service_location_folder}/${service_file_basename}\" \"${service_activation_folder}/${service_file_basename}\" && systemctl enable telegraf"
             start_command="systemctl start ${service_file_basename}"
         ;;
 

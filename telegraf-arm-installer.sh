@@ -252,8 +252,8 @@ if [ ${exit_code} -eq ${SUCCESS} ]; then
             service_location_folder=$(find "${service_activation_folder}" -maxdepth 1 -type l -exec dirname '{}' \; | sort -u)
             service_location_folder=$(find "${service_activation_folder}" -maxdepth 1 -type l -exec ls -l '{}' \; | dirname $(awk '{print $NF}') | egrep "systemd/system" | sort -u | head -1)
             initialize_command="ln -s \"${service_file}\" \"${service_location_folder}/${service_file_basename}\""
-            enable_command="ln -s \"${service_location_folder}/${service_file_basename}\" \"${service_activation_folder}/${service_file_basename}\""
-            start_command="systemctl start ${service_file_basename}"
+            enable_command="sudo ln -s \"${service_location_folder}/${service_file_basename}\" \"${service_activation_folder}/${service_file_basename}\""
+            start_command="sudo systemctl start ${service_file_basename}"
             extra_notes="if 'systemctl start ${service_file_basename}' fails, run the following command:\n        sudo systemctl list-unit-files | egrep \"${service_file_basename}\"\n    If the command reports that ${service_file_basename} is 'linked', then run the following:\n        sudo systemctl enable ${service_file_basename}\n        sudo systemctl start ${service_file_basename}\n"
         ;;
 
@@ -279,12 +279,12 @@ if [ ${exit_code} -eq ${SUCCESS} ]; then
             echo "To configure telegraf, make changes to the file \"/etc/telegraf/telegraf.conf\""
             echo 
             echo "To enable telegraf, run the following command:"
-            echo "    sudo ${enable_command}"
+            echo "    ${enable_command}"
             echo 
             echo "To start telegraf, run the following command:"
-            echo "    sudo ${start_command}"
+            echo "    ${start_command}"
             echo
-            echo -ne "NOTE: ${extra_notes}\n"
+            echo -ne "NOTES: ${extra_notes}\n"
         else
             echo "ERROR"
             err_msg="Initialization command \"${initialize_command}\" failed"

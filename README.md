@@ -1,5 +1,5 @@
 # telegraf-armhf-installer
-A shell script to aid in installing the telegraf binary distribution from https://portal.influxdata.com/downloads
+A shell script to aid in installing the telegraf binary distribution for ARMhf architecture from https://portal.influxdata.com/downloads
 
 # How to use this script:
 ~~~~

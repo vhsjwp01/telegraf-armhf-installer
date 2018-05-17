@@ -1,5 +1,5 @@
 #!/bin/bash
-#set -x
+set -x
 
 PATH="/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin"
 TERM="vt100"

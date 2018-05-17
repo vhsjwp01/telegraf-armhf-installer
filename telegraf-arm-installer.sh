@@ -254,14 +254,16 @@ if [ ${exit_code} -eq ${SUCCESS} ]; then
             initialize_command="ln -s \"${service_file}\" \"${service_location_folder}/${service_file_basename}\""
             enable_command="ln -s \"${service_location_folder}/${service_file_basename}\" \"${service_activation_folder}/${service_file_basename}\""
             start_command="systemctl start ${service_file_basename}"
+            extra_notes="if 'systemctl start ${service_file_basename}' fails, run the following command:\n        sudo systemctl list-unit-files | egrep \"${service_file_basename}\"\n    If the command reports that ${service_file_basename} is 'linked', then run the following:\n        sudo systemctl enable ${service_file_basename}\n        sudo systemctl start ${service_file_basename}\n"
         ;;
 
         *)
             service_activation_folder="/etc/init.d"
             service_file=$(find "${service_scripts_folder}" -maxdepth 1 -type f -iname "init.sh")
             initialize_command="ln -s \"${service_file}\" \"${service_activation_folder}/telegraf\""
-            enable_command="update-rc.d telegraf defaults && update-rc.d telegraf enable"
-            start_command="service telegraf start"
+            enable_command="sudo update-rc.d telegraf defaults && sudo update-rc.d telegraf enable"
+            start_command="sudo service telegraf start"
+            extra_notes="nothing to see here, citizen\n"
         ;;
 
     esac
@@ -272,6 +274,7 @@ if [ ${exit_code} -eq ${SUCCESS} ]; then
 
         if [ ${exit_code} -eq ${SUCCESS} ]; then
             echo "SUCCESS"
+            echo
             echo "Telegraf is installed, but not configured for your environment."
             echo "To configure telegraf, make changes to the file \"/etc/telegraf/telegraf.conf\""
             echo 
@@ -281,6 +284,7 @@ if [ ${exit_code} -eq ${SUCCESS} ]; then
             echo "To start telegraf, run the following command:"
             echo "    sudo ${start_command}"
             echo
+            echo -ne "NOTE: ${extra_notes}\n"
         else
             echo "ERROR"
             err_msg="Initialization command \"${initialize_command}\" failed"

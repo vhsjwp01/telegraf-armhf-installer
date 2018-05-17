@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+#set -x
 
 PATH="/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin"
 TERM="vt100"
@@ -79,7 +79,7 @@ fi
 # WHY:  Historically, permissions have been chaotic at times
 #
 if [ ${exit_code} -eq ${SUCCESS} ]; then
-    target_folder_name=$(zcat "${target_filename}" | tar xvf - 2>&1 | awk -F'/' '/x \.\// {print $2}' | sort -u)
+    target_folder_name=$(zcat "${target_filename}" | tar xvf - 2>&1 | awk -F'/' '/\.\/telegraf/ {print $2}' | sort -u)
     echo "Target folder name: \"${target_folder_name}\""
     telegraf_version=$(echo "${target_filename}" | sed -e 's?\.tar\.gz$??g' | sed -e "s#^${target_folder_name}-##g")
     echo "Telegraf version: ${telegraf_version}"

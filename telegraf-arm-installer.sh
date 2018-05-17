@@ -80,9 +80,9 @@ fi
 #
 if [ ${exit_code} -eq ${SUCCESS} ]; then
     target_folder_name=$(zcat "${target_filename}" | tar xvf - 2>&1 | awk -F'/' '/x \.\// {print $2}' | sort -u)
-    #echo "Target folder name: \"${target_folder_name}\""
+    echo "Target folder name: \"${target_folder_name}\""
     telegraf_version=$(echo "${target_filename}" | sed -e 's?\.tar\.gz$??g' | sed -e "s#^${target_folder_name}-##g")
-    #echo "Telegraf version: ${telegraf_version}"
+    echo "Telegraf version: ${telegraf_version}"
 
     # Make sure the target folder exists
     if [ -d "./${target_folder_name}" ]; then
@@ -101,7 +101,7 @@ if [ ${exit_code} -eq ${SUCCESS} ]; then
         exit_code=${ERROR}
     fi
 
-    #echo "Target folder name: \"${target_folder_name}\""
+    echo "Target folder name: \"${target_folder_name}\""
 fi
 
 # WHAT: Fix folder permissions

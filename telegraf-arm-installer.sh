@@ -227,7 +227,7 @@ if [ ${exit_code} -eq ${SUCCESS} ]; then
             service_location_folder=$(find "${service_activation_folder}" -maxdepth 1 -type l -exec dirname '{}' \; | sort -u)
             service_location_folder=$(find "${service_activation_folder}" -maxdepth 1 -type l -exec ls -l '{}' \; | dirname $(awk '{print $NF}') | egrep "systemd/system" | sort -u | head -1)
             initialize_command="ln -s \"${service_file}\" \"${service_location_folder}/${service_file_basename}\""
-            enable_command="ln -s \"${service_location_folder}/${service_file_basename}\" \"${service_activation_folder}/${service_file_basename}\" && systemctl enable telegraf"
+            enable_command="ln -s \"${service_location_folder}/${service_file_basename}\" \"${service_activation_folder}/${service_file_basename}\""
             start_command="systemctl start ${service_file_basename}"
         ;;
 

@@ -45,7 +45,7 @@ f__print_line() {
 #
 if [ ${exit_code} -eq ${SUCCESS} ]; then
     echo -ne "Looking for needed commands: "
-    needed_commands="awk bc chown chmod cpio curl cut dirname egrep elinks find head id sort tar wc zcat"
+    needed_commands="awk bc chown chmod cpio curl cut dirname egrep elinks find head id sort tar wc wget zcat"
 
     for needed_command in ${needed_commands} ; do
         echo -ne "${needed_command} "

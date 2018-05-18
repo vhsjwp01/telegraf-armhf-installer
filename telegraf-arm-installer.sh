@@ -254,7 +254,7 @@ if [ ${exit_code} -eq ${SUCCESS} ]; then
             initialize_command="ln -s \"${service_file}\" \"${service_location_folder}/${service_file_basename}\""
             enable_command="sudo ln -s \"${service_location_folder}/${service_file_basename}\" \"${service_activation_folder}/${service_file_basename}\""
             start_command="sudo systemctl start ${service_file_basename}"
-            extra_notes="if 'systemctl start ${service_file_basename}' fails, run the following command:\n        sudo systemctl list-unit-files | egrep \"${service_file_basename}\"\n    If the command reports that ${service_file_basename} is 'linked', then run the following:\n        sudo systemctl enable ${service_file_basename}\n        sudo systemctl start ${service_file_basename}\n"
+            extra_notes="if 'systemctl start ${service_file_basename}' fails, run the following command:\n           sudo systemctl list-unit-files | egrep \"${service_file_basename}\"\n       If the command reports that ${service_file_basename} is 'linked', then run the following:\n           sudo systemctl enable ${service_file_basename}\n           sudo systemctl start ${service_file_basename}\n"
         ;;
 
         *)

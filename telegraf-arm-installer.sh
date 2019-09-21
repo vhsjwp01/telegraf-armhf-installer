@@ -89,7 +89,7 @@ fi
 #
 if [ ${exit_code} -eq ${SUCCESS} ]; then
     f__print_line "Querying ${TELEGRAF_DL_URL} for download command"
-    fetch_command=$(curl ${TELEGRAF_DL_URL} -s | elinks -dump | egrep "${TELEGRAF_REGEX}" | egrep -v "${TELEGRAF_IGNORE_REGEX}")
+    fetch_command=$(curl -L ${TELEGRAF_DL_URL} -s | elinks -dump | egrep "${TELEGRAF_REGEX}" | egrep -v "${TELEGRAF_IGNORE_REGEX}")
 
     if [ "${fetch_command}" = "" ]; then
         echo "ERROR"
